@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hotel Playa Paraíso — Dibulla, La Guajira</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --sand: #f2e8d5; --sand-dark: #e0ceaf;
+    --ocean: #1a7a8a; --ocean-deep: #0d4a57; --ocean-light: #5ab3c4;
+    --bamboo: #c17f3a; --bamboo-light: #d9a05a;
+    --dark: #1a1208; --text: #2c1f0e; --text-muted: #7a6a4a; --white: #fdfaf3;
+  }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--white); color: var(--text); overflow-x: hidden; }
+
+  /* NAV */
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 20px 48px; transition: all 0.4s; }
+  nav.scrolled { background: rgba(13,74,87,0.97); backdrop-filter: blur(8px); padding: 14px 48px; box-shadow: 0 2px 20px rgba(0,0,0,0.3); }
+  .nav-logo { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; color: var(--white); text-decoration: none; line-height: 1.1; }
+  .nav-logo span { display: block; font-size: 10px; font-family: 'DM Sans', sans-serif; font-weight: 300; letter-spacing: 0.3em; text-transform: uppercase; opacity: 0.8; }
+  .nav-links { display: flex; gap: 32px; list-style: none; }
+  .nav-links a { font-size: 12px; font-weight: 500; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(255,255,255,0.85); text-decoration: none; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--bamboo-light); }
+  .nav-cta { font-size: 12px; font-weight: 500; letter-spacing: 0.15em; text-transform: uppercase; color: var(--dark); background: var(--bamboo-light); padding: 10px 24px; text-decoration: none; border-radius: 2px; transition: all 0.3s; }
+  .nav-cta:hover { background: var(--bamboo); color: var(--white); }
+
+  /* HERO */
+  .hero { height: 100vh; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+  .hero-bg { position: absolute; inset: 0; }
+  .hero-bg img { width: 100%; height: 100%; object-fit: cover; object-position: center; filter: brightness(0.55) saturate(1.2); }
+  .hero-bg::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(13,74,87,0.35) 0%, rgba(13,30,20,0.65) 100%); }
+  .hero-content { position: relative; z-index: 2; text-align: center; padding: 0 24px; max-width: 820px; }
+  .hero-badge { display: inline-flex; align-items: center; gap: 10px; font-size: 11px; font-weight: 500; letter-spacing: 0.3em; text-transform: uppercase; color: var(--bamboo-light); margin-bottom: 24px; opacity: 0; animation: fadeUp 1s 0.3s forwards; }
+  .hero-badge::before, .hero-badge::after { content: ''; flex: 0 0 22px; height: 1px; background: var(--bamboo-light); }
+  .hero-title { font-family: 'Playfair Display', serif; font-size: clamp(54px, 9vw, 104px); font-weight: 700; line-height: 0.93; color: var(--white); opacity: 0; animation: fadeUp 1s 0.5s forwards; }
+  .hero-title em { font-style: italic; color: var(--sand); }
+  .hero-sub { font-size: 15px; font-weight: 300; color: rgba(255,255,255,0.75); margin-top: 24px; letter-spacing: 0.06em; line-height: 1.6; opacity: 0; animation: fadeUp 1s 0.7s forwards; }
+  .hero-btns { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin-top: 40px; opacity: 0; animation: fadeUp 1s 0.9s forwards; }
+  .btn-main { font-size: 12px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: var(--dark); background: var(--bamboo-light); padding: 16px 36px; text-decoration: none; border-radius: 2px; transition: all 0.3s; display: inline-block; }
+  .btn-main:hover { background: var(--bamboo); color: var(--white); }
+  .btn-ghost { font-size: 12px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: var(--white); border: 1px solid rgba(255,255,255,0.4); padding: 16px 36px; text-decoration: none; border-radius: 2px; transition: all 0.3s; display: inline-block; }
+  .btn-ghost:hover { border-color: var(--white); background: rgba(255,255,255,0.1); }
+  .hero-scroll { position: absolute; bottom: 32px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 8px; opacity: 0; animation: fadeUp 1s 1.2s forwards; }
+  .hero-scroll span { font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase; color: rgba(255,255,255,0.45); }
+  .scroll-bar { width: 1px; height: 40px; background: linear-gradient(to bottom, rgba(255,255,255,0.6), transparent); animation: bounce 2s ease-in-out infinite; }
+
+  /* STRIP */
+  .strip { background: var(--ocean-deep); display: flex; justify-content: center; flex-wrap: wrap; }
+  .strip-item { display: flex; align-items: center; gap: 10px; padding: 18px 32px; color: var(--sand); border-right: 1px solid rgba(255,255,255,0.1); font-size: 12px; font-weight: 500; letter-spacing: 0.08em; }
+  .strip-item:last-child { border-right: none; }
+
+  /* LAYOUT */
+  .section-wrap { padding: 110px 48px; max-width: 1200px; margin: 0 auto; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+  .label { font-size: 10px; font-weight: 500; letter-spacing: 0.3em; text-transform: uppercase; color: var(--ocean); display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+  .label::after { content: ''; flex: 0 0 28px; height: 1px; background: var(--ocean); }
+  .label.center { justify-content: center; }
+  .label.center::before { content: ''; flex: 0 0 28px; height: 1px; background: var(--ocean); }
+  .big-title { font-family: 'Playfair Display', serif; font-size: clamp(34px, 3.5vw, 50px); font-weight: 700; line-height: 1.15; color: var(--text); margin-bottom: 20px; }
+  .big-title em { font-style: italic; color: var(--ocean); }
+  .big-title.bamboo em { color: var(--bamboo); }
+  .body-text { font-size: 15px; font-weight: 300; line-height: 1.85; color: var(--text-muted); margin-bottom: 16px; }
+
+  /* ABOUT IMGS */
+  .about-imgs { position: relative; height: 520px; }
+  .about-img-main { position: absolute; top: 0; left: 0; right: 80px; bottom: 80px; border-radius: 4px; overflow: hidden; }
+  .about-img-main img { width: 100%; height: 100%; object-fit: cover; filter: saturate(1.1) contrast(1.04); }
+  .about-img-sec { position: absolute; bottom: 0; right: 0; width: 56%; height: 54%; border-radius: 4px; overflow: hidden; border: 4px solid var(--white); box-shadow: 0 8px 32px rgba(0,0,0,0.2); }
+  .about-img-sec img { width: 100%; height: 100%; object-fit: cover; filter: saturate(1.15) contrast(1.04); }
+  .about-years { position: absolute; top: 18px; right: 58px; background: var(--bamboo); color: var(--white); width: 80px; height: 80px; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; font-family: 'Playfair Display', serif; z-index: 2; box-shadow: 0 4px 16px rgba(193,127,58,0.4); }
+  .about-years strong { font-size: 26px; line-height: 1; }
+  .about-years span { font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; font-family: 'DM Sans', sans-serif; }
+  .stats-row { display: flex; gap: 32px; margin-top: 32px; padding-top: 28px; border-top: 1px solid var(--sand-dark); }
+  .stat-n { font-family: 'Playfair Display', serif; font-size: 38px; font-weight: 700; color: var(--bamboo); line-height: 1; }
+  .stat-l { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+
+  /* GALERÍA */
+  .gallery-strip { display: grid; grid-template-columns: 2fr 1fr 1fr; grid-template-rows: 260px 260px; gap: 4px; }
+  .g-item { overflow: hidden; position: relative; }
+  .g-item img { width: 100%; height: 100%; object-fit: cover; filter: saturate(1.1); transition: transform 0.6s; }
+  .g-item:hover img { transform: scale(1.06); }
+  .g-item.tall { grid-row: span 2; }
+  .g-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(13,74,87,0.45), transparent 50%); opacity: 0; transition: opacity 0.3s; }
+  .g-item:hover .g-overlay { opacity: 1; }
+
+  /* HABITACIONES */
+  .rooms-section { padding: 110px 48px; background: var(--sand); }
+  .section-title { font-family: 'Playfair Display', serif; font-size: clamp(36px, 4vw, 52px); font-weight: 700; color: var(--text); margin-top: 12px; }
+  .section-title em { font-style: italic; color: var(--ocean); }
+  .section-header { text-align: center; margin-bottom: 64px; }
+  .rooms-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; max-width: 1200px; margin: 0 auto; }
+  .room-card { background: var(--white); border-radius: 4px; overflow: hidden; box-shadow: 0 2px 16px rgba(0,0,0,0.07); transition: transform 0.3s, box-shadow 0.3s; }
+  .room-card:hover { transform: translateY(-6px); box-shadow: 0 14px 36px rgba(0,0,0,0.14); }
+  .room-img { height: 220px; overflow: hidden; position: relative; }
+  .room-img img { width: 100%; height: 100%; object-fit: cover; filter: saturate(1.1); transition: transform 0.5s; }
+  .room-card:hover .room-img img { transform: scale(1.07); }
+  .room-tag { position: absolute; top: 14px; left: 14px; background: var(--ocean); color: var(--white); font-size: 10px; font-weight: 500; letter-spacing: 0.15em; text-transform: uppercase; padding: 5px 12px; border-radius: 2px; }
+  .room-body { padding: 24px; }
+  .room-name { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+  .room-desc { font-size: 13px; font-weight: 300; color: var(--text-muted); line-height: 1.7; margin-bottom: 16px; }
+  .room-feats { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 20px; }
+  .feat { font-size: 11px; color: var(--ocean-deep); background: rgba(26,122,138,0.08); padding: 4px 10px; border-radius: 20px; font-weight: 500; }
+  .room-footer { display: flex; align-items: center; justify-content: space-between; padding-top: 16px; border-top: 1px solid var(--sand-dark); }
+  .room-price { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; color: var(--bamboo); }
+  .room-price span { font-size: 12px; font-family: 'DM Sans', sans-serif; font-weight: 300; color: var(--text-muted); }
+  .room-btn { font-size: 11px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--white); background: var(--ocean); padding: 9px 18px; border-radius: 2px; text-decoration: none; transition: background 0.2s; }
+  .room-btn:hover { background: var(--ocean-deep); }
+
+  /* RESTAURANTE */
+  .rest-imgs { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 200px 200px; gap: 8px; border-radius: 4px; overflow: hidden; }
+  .rest-img { overflow: hidden; }
+  .rest-img img { width: 100%; height: 100%; object-fit: cover; filter: saturate(1.15) contrast(1.04); transition: transform 0.5s; }
+  .rest-img:hover img { transform: scale(1.07); }
+  .rest-img.big { grid-row: span 2; }
+  .menu-items { display: flex; flex-direction: column; margin: 28px 0; }
+  .menu-row { display: flex; justify-content: space-between; align-items: baseline; padding: 14px 0; border-bottom: 1px dashed var(--sand-dark); }
+  .menu-row:last-child { border-bottom: none; }
+  .menu-name { font-family: 'Playfair Display', serif; font-size: 17px; color: var(--text); }
+  .menu-desc-sm { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+  .menu-p { font-size: 14px; font-weight: 500; color: var(--bamboo); white-space: nowrap; margin-left: 12px; }
+  .wa-btn { display: inline-flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--white); background: #25d366; padding: 14px 28px; border-radius: 2px; text-decoration: none; transition: all 0.3s; }
+  .wa-btn:hover { background: #1da851; }
+
+  /* RESEÑAS */
+  .reviews-section { padding: 110px 48px; background: var(--ocean-deep); }
+  .reviews-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; max-width: 1100px; margin: 48px auto 0; }
+  .review-card { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; padding: 28px; transition: background 0.3s; }
+  .review-card:hover { background: rgba(255,255,255,0.1); }
+  .stars { display: flex; gap: 3px; margin-bottom: 12px; }
+  .star { color: var(--bamboo-light); font-size: 15px; }
+  .star.half { position: relative; display: inline-block; }
+  .review-text { font-size: 14px; font-weight: 300; color: rgba(255,255,255,0.82); line-height: 1.78; margin-bottom: 20px; font-style: italic; }
+  .review-author { display: flex; align-items: center; gap: 10px; }
+  .review-av { width: 36px; height: 36px; border-radius: 50%; background: var(--ocean); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 500; color: var(--white); flex-shrink: 0; }
+  .review-name { font-size: 13px; font-weight: 500; color: var(--sand); }
+  .review-date { font-size: 11px; color: rgba(255,255,255,0.38); }
+
+  /* Rating global */
+  .rating-bar { display: flex; align-items: center; gap: 24px; justify-content: center; margin-top: 52px; padding-top: 40px; border-top: 1px solid rgba(255,255,255,0.1); flex-wrap: wrap; }
+  .rating-num { font-family: 'Playfair Display', serif; font-size: 72px; font-weight: 700; color: var(--white); line-height: 1; }
+  .rating-stars-big { display: flex; gap: 5px; margin-bottom: 6px; }
+  .star-big { font-size: 22px; color: var(--bamboo-light); }
+  .rating-label { font-size: 12px; color: rgba(255,255,255,0.45); letter-spacing: 0.1em; margin-top: 4px; }
+
+  /* UBICACIÓN */
+  .contact-items { display: flex; flex-direction: column; gap: 14px; margin-bottom: 32px; }
+  .contact-item { display: flex; align-items: center; gap: 14px; }
+  .contact-icon { width: 40px; height: 40px; border-radius: 50%; background: rgba(26,122,138,0.1); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+  .contact-text { font-size: 14px; color: var(--text); }
+  .contact-text small { display: block; font-size: 10px; color: var(--text-muted); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 2px; }
+  .map-box { border-radius: 4px; overflow: hidden; height: 380px; position: relative; }
+  .map-box img { width: 100%; height: 100%; object-fit: cover; filter: saturate(1.2); }
+  .map-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(13,74,87,0.7) 0%, transparent 50%); display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding: 28px; gap: 10px; text-align: center; }
+  .map-title { font-family: 'Playfair Display', serif; font-size: 22px; color: var(--white); font-weight: 700; }
+  .map-sub { font-size: 13px; color: rgba(255,255,255,0.75); }
+  .map-link { font-size: 12px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--white); background: var(--ocean); padding: 10px 22px; border-radius: 2px; text-decoration: none; transition: background 0.2s; }
+  .map-link:hover { background: var(--ocean-deep); }
+
+  /* RESERVAR */
+  .reservar-section { padding: 110px 48px; background: linear-gradient(135deg, var(--sand), var(--sand-dark)); }
+  .reservar-inner { max-width: 680px; margin: 0 auto; text-align: center; }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; text-align: left; margin-top: 48px; }
+  .form-group { display: flex; flex-direction: column; gap: 7px; }
+  .form-group.full { grid-column: span 2; }
+  .form-group label { font-size: 10px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-muted); }
+  .form-group input, .form-group select, .form-group textarea { background: var(--white); border: 1px solid var(--sand-dark); color: var(--text); padding: 13px 16px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 300; outline: none; border-radius: 2px; transition: border-color 0.2s; }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--ocean); }
+  .form-group textarea { resize: vertical; min-height: 90px; }
+  .form-submit { width: 100%; margin-top: 8px; font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; background: var(--ocean-deep); color: var(--white); border: none; padding: 17px; cursor: pointer; border-radius: 2px; transition: all 0.3s; }
+  .form-submit:hover { background: var(--ocean); }
+
+  /* FOOTER */
+  footer { background: var(--dark); padding: 60px 48px 32px; }
+  .footer-top { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 48px; padding-bottom: 40px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+  .footer-brand { font-family: 'Playfair Display', serif; font-size: 26px; font-weight: 700; color: var(--white); margin-bottom: 12px; }
+  .footer-desc { font-size: 13px; font-weight: 300; color: rgba(255,255,255,0.42); line-height: 1.7; }
+  .footer-heading { font-size: 10px; font-weight: 500; letter-spacing: 0.25em; text-transform: uppercase; color: var(--bamboo-light); margin-bottom: 16px; }
+  .footer-links { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .footer-links a { font-size: 13px; color: rgba(255,255,255,0.45); text-decoration: none; transition: color 0.2s; }
+  .footer-links a:hover { color: var(--white); }
+  .footer-bottom { display: flex; justify-content: space-between; align-items: center; padding-top: 24px; }
+  .footer-copy { font-size: 12px; color: rgba(255,255,255,0.22); }
+  .footer-wa { font-size: 12px; color: var(--bamboo-light); text-decoration: none; }
+
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes bounce { 0%,100%{opacity:.5} 50%{opacity:1} }
+  .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.85s, transform 0.85s; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+  .d1 { transition-delay: 0.15s; } .d2 { transition-delay: 0.3s; }
+
+  @media (max-width: 960px) {
+    nav { padding: 16px 24px; } .nav-links { display: none; }
+    .two-col { grid-template-columns: 1fr; gap: 48px; }
+    .section-wrap { padding: 72px 24px; }
+    .about-imgs { height: 360px; }
+    .rooms-section, .reviews-section, .reservar-section { padding: 72px 24px; }
+    .rooms-grid, .reviews-grid { grid-template-columns: 1fr; }
+    .gallery-strip { grid-template-columns: 1fr 1fr; }
+    .g-item.tall { grid-row: span 1; }
+    .form-grid { grid-template-columns: 1fr; }
+    .form-group.full { grid-column: span 1; }
+    .footer-top { grid-template-columns: 1fr; gap: 28px; }
+    .footer-bottom { flex-direction: column; gap: 8px; }
+    .strip { flex-direction: column; }
+    .strip-item { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.1); justify-content: center; }
+    .rating-bar { flex-direction: column; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<nav id="navbar">
+  <a href="#" class="nav-logo">Hotel Playa Paraíso<span>Dibulla · La Guajira</span></a>
+  <ul class="nav-links">
+    <li><a href="#habitaciones">Habitaciones</a></li>
+    <li><a href="#restaurante">Restaurante</a></li>
+    <li><a href="#resenas">Reseñas</a></li>
+    <li><a href="#ubicacion">Cómo llegar</a></li>
+  </ul>
+  <a href="#reservar" class="nav-cta">Reservar</a>
+</nav>
+
+<!-- HERO: atardecer en la playa -->
+<section class="hero">
+  <div class="hero-bg">
+    <img src="imgs/Screenshot_20260315_173959_Maps.jpg" alt="Hotel Playa Paraíso Dibulla">
+  </div>
+  <div class="hero-content">
+    <div class="hero-badge">Dibulla · La Guajira · Colombia</div>
+    <h1 class="hero-title">Hotel<br><em>Playa Paraíso</em></h1>
+    <p class="hero-sub">Frente al mar Caribe · Cabañas en bambú · Comida fresca del día</p>
+    <div class="hero-btns">
+      <a href="#reservar" class="btn-main">Reservar ahora</a>
+      <a href="https://wa.me/573207525895" target="_blank" class="btn-ghost">📲 WhatsApp</a>
+    </div>
+  </div>
+  <div class="hero-scroll"><div class="scroll-bar"></div><span>Explorar</span></div>
+</section>
+
+<!-- STRIP -->
+<div class="strip">
+  <div class="strip-item">🌊 Frente al mar</div>
+  <div class="strip-item">🦀 Comida fresca del día</div>
+  <div class="strip-item">🌴 Cabañas en bambú</div>
+  <div class="strip-item">⭐ 4.6 en Google</div>
+  <div class="strip-item">❄️ Aire acondicionado</div>
+</div>
+
+<!-- NOSOTROS -->
+<div class="section-wrap">
+  <div class="two-col">
+    <div class="about-imgs reveal">
+      <div class="about-img-main">
+        <!-- Terraza en bambú frente al mar -->
+        <img src="imgs/Screenshot_20260315_173845_Maps.jpg" alt="Hotel Playa Paraíso frente al mar">
+      </div>
+      <div class="about-img-sec">
+        <!-- Vista al mar azul con barcos -->
+        <img src="imgs/Screenshot_20260315_173900_Maps.jpg" alt="Vista al Caribe">
+      </div>
+      <div class="about-years"><strong>+10</strong><span>Años</span></div>
+    </div>
+    <div class="reveal d1">
+      <div class="label">Quiénes somos</div>
+      <h2 class="big-title">El paraíso que<br>buscabas está<br>en <em>Dibulla</em></h2>
+      <p class="body-text">Hotel Playa Paraíso es un rincón único en el Caribe colombiano: cabañas construidas en bambú con vista directa al mar, brisa fresca todo el día y una cocina que trae el pescado fresco de la playa a tu mesa.</p>
+      <p class="body-text">Don José y su equipo te reciben como en familia — con calidez, atención de verdad y el orgullo de mostrarle al mundo lo mejor de Dibulla.</p>
+      <div class="stats-row">
+        <div><div class="stat-n">4.6★</div><div class="stat-l">En Google</div></div>
+        <div><div class="stat-n">100%</div><div class="stat-l">Recomendado</div></div>
+        <div><div class="stat-n">Caribe</div><div class="stat-l">Frente al mar</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- GALERÍA -->
+<section class="gallery-strip">
+  <!-- bambú con flores rojas -->
+  <div class="g-item tall"><img src="imgs/Screenshot_20260315_173907_Maps.jpg" alt="Hotel bambú Dibulla"><div class="g-overlay"></div></div>
+  <!-- palmeras cielo azul -->
+  <div class="g-item"><img src="imgs/Screenshot_20260315_174007_Maps.jpg" alt="Caribe colombiano"><div class="g-overlay"></div></div>
+  <!-- noche palmeras luna -->
+  <div class="g-item"><img src="imgs/Screenshot_20260315_173921_Maps.jpg" alt="Noche Dibulla"><div class="g-overlay"></div></div>
+  <!-- vista al mar con barcos -->
+  <div class="g-item"><img src="imgs/Screenshot_20260315_173900_Maps.jpg" alt="Playa Dibulla"><div class="g-overlay"></div></div>
+  <!-- estructura bambú exterior -->
+  <div class="g-item"><img src="imgs/Screenshot_20260315_173850_Maps.jpg" alt="Cabaña bambú"><div class="g-overlay"></div></div>
+</section>
+
+<!-- HABITACIONES -->
+<section class="rooms-section" id="habitaciones">
+  <div class="section-header reveal">
+    <div class="label center">Alojamiento</div>
+    <h2 class="section-title">Nuestras <em>cabañas</em></h2>
+  </div>
+  <div class="rooms-grid">
+    <!-- Habitación turquesa -->
+    <div class="room-card reveal">
+      <div class="room-img">
+        <img src="imgs/Screenshot_20260315_173855_Maps.jpg" alt="Cabaña Caribe">
+        <span class="room-tag">Estándar</span>
+      </div>
+      <div class="room-body">
+        <div class="room-name">Cabaña Caribe</div>
+        <p class="room-desc">Acogedora cabaña en bambú con cama doble, aire acondicionado, baño privado y decoración artesanal caribeña.</p>
+        <div class="room-feats"><span class="feat">Aire acondicionado</span><span class="feat">Baño privado</span><span class="feat">TV</span><span class="feat">WiFi</span></div>
+        <div class="room-footer">
+          <div class="room-price">Consultar<span> / noche</span></div>
+          <a href="https://wa.me/573207525895?text=Hola%20Don%20Jos%C3%A9%2C%20quiero%20info%20sobre%20la%20Caba%C3%B1a%20Caribe" target="_blank" class="room-btn">Reservar</a>
+        </div>
+      </div>
+    </div>
+    <!-- Suite con jacuzzi azul -->
+    <div class="room-card reveal d1">
+      <div class="room-img">
+        <img src="imgs/Screenshot_20260315_173904_Maps.jpg" alt="Suite Paraíso">
+        <span class="room-tag" style="background:var(--bamboo)">Suite</span>
+      </div>
+      <div class="room-body">
+        <div class="room-name">Suite Paraíso</div>
+        <p class="room-desc">Espaciosa suite con jacuzzi iluminado en bambú, cama king, decoración artesanal y ambiente íntimo frente al mar.</p>
+        <div class="room-feats"><span class="feat">Jacuzzi</span><span class="feat">Cama king</span><span class="feat">Aire acondicionado</span><span class="feat">WiFi</span></div>
+        <div class="room-footer">
+          <div class="room-price">Consultar<span> / noche</span></div>
+          <a href="https://wa.me/573207525895?text=Hola%20Don%20Jos%C3%A9%2C%20quiero%20info%20sobre%20la%20Suite%20Para%C3%ADso" target="_blank" class="room-btn">Reservar</a>
+        </div>
+      </div>
+    </div>
+    <!-- Habitación techo de paja -->
+    <div class="room-card reveal d2">
+      <div class="room-img">
+        <img src="imgs/Screenshot_20260315_173916_Maps.jpg" alt="Cabaña Familiar">
+        <span class="room-tag" style="background:var(--ocean-deep)">Familiar</span>
+      </div>
+      <div class="room-body">
+        <div class="room-name">Cabaña Familiar</div>
+        <p class="room-desc">Amplia cabaña con techo de paja tradicional, para grupos de hasta 8 personas. Perfecta para familias y amigos.</p>
+        <div class="room-feats"><span class="feat">Hasta 8 personas</span><span class="feat">Múltiples camas</span><span class="feat">Aire acondicionado</span><span class="feat">WiFi</span></div>
+        <div class="room-footer">
+          <div class="room-price">Consultar<span> / noche</span></div>
+          <a href="https://wa.me/573207525895?text=Hola%20Don%20Jos%C3%A9%2C%20quiero%20info%20sobre%20la%20Caba%C3%B1a%20Familiar" target="_blank" class="room-btn">Reservar</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RESTAURANTE -->
+<div class="section-wrap" id="restaurante">
+  <div class="two-col">
+    <div class="reveal">
+      <div class="label">Beach Bar & Restaurante</div>
+      <h2 class="big-title bamboo">Del mar<br>a tu <em>mesa</em></h2>
+      <p class="body-text">Pescado fresco cada día, preparado con recetas de la región. Desayunos completos con fruta, jugo y café. Almuerzos tan generosos que dos personas pueden compartir uno.</p>
+      <div class="menu-items">
+        <div class="menu-row"><div><div class="menu-name">Pescado frito entero</div><div class="menu-desc-sm">Con patacones, arroz y ensalada fresca</div></div><div class="menu-p">Fresco del día</div></div>
+        <div class="menu-row"><div><div class="menu-name">Pescado en salsa</div><div class="menu-desc-sm">En hogao con cebolla y tomate caribeño</div></div><div class="menu-p">Típico</div></div>
+        <div class="menu-row"><div><div class="menu-name">Desayuno costeño</div><div class="menu-desc-sm">Huevos, arepas, fruta, jugo y café</div></div><div class="menu-p">Completo</div></div>
+        <div class="menu-row"><div><div class="menu-name">Sancocho de pescado</div><div class="menu-desc-sm">Receta tradicional de Dibulla</div></div><div class="menu-p">Tradicional</div></div>
+      </div>
+      <a href="https://wa.me/573207525895?text=Hola%2C%20quiero%20reservar%20en%20el%20restaurante" target="_blank" class="wa-btn">📲 Reservar en el restaurante</a>
+    </div>
+    <div class="rest-imgs reveal d1">
+      <!-- plato de pescado grande -->
+      <div class="rest-img big"><img src="imgs/Screenshot_20260315_174539_Maps.jpg" alt="Pescado fresco"></div>
+      <!-- desayuno costeño -->
+      <div class="rest-img"><img src="imgs/Screenshot_20260315_174530_Maps.jpg" alt="Desayuno costeño"></div>
+      <!-- pescado en salsa -->
+      <div class="rest-img"><img src="imgs/Screenshot_20260315_174536_Maps.jpg" alt="Pescado en salsa"></div>
+    </div>
+  </div>
+</div>
+
+<!-- RESEÑAS -->
+<section class="reviews-section" id="resenas">
+  <div class="section-header reveal">
+    <div class="label center" style="color:var(--ocean-light)">Lo que dicen nuestros huéspedes</div>
+    <h2 class="section-title" style="color:var(--white)">Opiniones <em style="color:var(--bamboo-light)">reales</em></h2>
+  </div>
+  <div class="reviews-grid">
+    <div class="review-card reveal">
+      <div class="stars"><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span></div>
+      <p class="review-text">"La cabaña más hermosa de toda Dibulla. Don José es de los mejores anfitriones que puedes encontrar. Super recomendado, volvería una y mil veces."</p>
+      <div class="review-author"><div class="review-av">LR</div><div><div class="review-name">Lina Rendón</div><div class="review-date">Local Guide · hace un año</div></div></div>
+    </div>
+    <div class="review-card reveal d1">
+      <div class="stars"><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span></div>
+      <p class="review-text">"Lugar tranquilo, frente al mar. Empleados muy amables. Gran variedad de platos y porciones muy generosas. Habitaciones 5, Servicio 5, Ubicación 5."</p>
+      <div class="review-author"><div class="review-av">KF</div><div><div class="review-name">Kelly Flórez</div><div class="review-date">Local Guide · hace 11 meses</div></div></div>
+    </div>
+    <div class="review-card reveal d2">
+      <div class="stars"><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span></div>
+      <p class="review-text">"Don José sencillamente hace de este lugar el lugar perfecto. Comida deliciosa, tranquilidad total. Recomendadísimo."</p>
+      <div class="review-author"><div class="review-av">CM</div><div><div class="review-name">Carolina M.</div><div class="review-date">hace 2 años</div></div></div>
+    </div>
+    <div class="review-card reveal">
+      <div class="stars"><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span></div>
+      <p class="review-text">"Comida directamente del mar a tu mesa. No tan lleno como Palomino o Santa Marta. Lugar espectacular, anfitriones muy atentos."</p>
+      <div class="review-author"><div class="review-av">JC</div><div><div class="review-name">JC Pérez</div><div class="review-date">Local Guide · hace 7 años</div></div></div>
+    </div>
+    <div class="review-card reveal d1">
+      <div class="stars"><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span></div>
+      <p class="review-text">"Lo máximo en comida, atención, servicio, ubicación y gastronomía. Completamente recomendable."</p>
+      <div class="review-author"><div class="review-av">JP</div><div><div class="review-name">Juan Pablo</div><div class="review-date">Local Guide · hace 10 meses</div></div></div>
+    </div>
+    <div class="review-card reveal d2">
+      <div class="stars"><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span></div>
+      <p class="review-text">"100% recomendado, el mejor servicio de La Guajira, un restaurante exquisito y un paisaje sin igual."</p>
+      <div class="review-author"><div class="review-av">JE</div><div><div class="review-name">Jaime Eduardo Pérez</div><div class="review-date">hace 3 años</div></div></div>
+    </div>
+  </div>
+  <!-- Rating 4.6 -->
+  <div class="rating-bar reveal">
+    <div class="rating-num">4.6</div>
+    <div>
+      <div class="rating-stars-big">
+        <span class="star-big">★</span><span class="star-big">★</span><span class="star-big">★</span><span class="star-big">★</span>
+        <span class="star-big" style="opacity:0.5">★</span>
+      </div>
+      <div style="font-size:15px;color:var(--sand);font-weight:500;margin-top:4px;">Calificación en Google Maps</div>
+      <div class="rating-label">Basado en reseñas reales de huéspedes</div>
+    </div>
+  </div>
+</section>
+
+<!-- UBICACIÓN -->
+<div class="section-wrap" id="ubicacion">
+  <div class="two-col">
+    <div class="reveal">
+      <div class="label">Cómo llegar</div>
+      <h2 class="big-title">Estamos en<br><em>Dibulla</em>,<br>La Guajira</h2>
+      <p class="body-text">A solo 1 hora de Santa Marta por la vía costera. Un pueblo tranquilo, frente al mar, alejado del turismo masivo. Exactamente lo que necesitas para desconectarte de verdad.</p>
+      <div class="contact-items">
+        <div class="contact-item"><div class="contact-icon">📍</div><div class="contact-text"><small>Dirección</small>Frente a la playa, Dibulla, La Guajira</div></div>
+        <div class="contact-item"><div class="contact-icon">📱</div><div class="contact-text"><small>WhatsApp y llamadas</small>320 752 5895</div></div>
+        <div class="contact-item"><div class="contact-icon">🕐</div><div class="contact-text"><small>Atención</small>Todos los días · 24 horas</div></div>
+      </div>
+      <a href="https://wa.me/573207525895?text=Hola%20Don%20Jos%C3%A9%2C%20quiero%20informaci%C3%B3n%20del%20hotel" target="_blank" class="wa-btn">📲 Escribir por WhatsApp</a>
+    </div>
+    <!-- Foto exterior fachada bambú como mapa visual -->
+    <div class="map-box reveal d1">
+      <img src="imgs/Screenshot_20260315_174455_Maps.jpg" alt="Hotel Playa Paraíso Dibulla">
+      <div class="map-overlay">
+        <div class="map-title">Hotel Playa Paraíso</div>
+        <div class="map-sub">Dibulla, La Guajira · Frente al mar</div>
+        <a href="https://maps.google.com/?q=Hotel+Playa+Paraiso+Dibulla+La+Guajira" target="_blank" class="map-link">Ver en Google Maps</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- RESERVAR -->
+<section class="reservar-section" id="reservar">
+  <div class="reservar-inner reveal">
+    <div class="label center">Reservas</div>
+    <h2 class="section-title">¿Listo para tu<br><em>escapada</em> al Caribe?</h2>
+    <p class="body-text" style="margin-top:16px">Déjanos tus datos y Don José te contacta por WhatsApp para confirmar tu estadía.</p>
+    <div class="form-grid">
+      <div class="form-group"><label>Nombre completo</label><input type="text" placeholder="Tu nombre"></div>
+      <div class="form-group"><label>WhatsApp</label><input type="tel" placeholder="+57 300 000 0000"></div>
+      <div class="form-group"><label>Fecha de llegada</label><input type="date"></div>
+      <div class="form-group"><label>Fecha de salida</label><input type="date"></div>
+      <div class="form-group"><label>Tipo de cabaña</label>
+        <select>
+          <option>Cabaña Caribe (estándar)</option>
+          <option>Suite Paraíso (con jacuzzi)</option>
+          <option>Cabaña Familiar (hasta 8 personas)</option>
+          <option>No lo sé aún</option>
+        </select>
+      </div>
+      <div class="form-group"><label>Número de personas</label>
+        <select>
+          <option>1 persona</option><option>2 personas</option>
+          <option selected>3 – 4 personas</option>
+          <option>5 – 6 personas</option><option>7 – 8 personas</option>
+        </select>
+      </div>
+      <div class="form-group full"><label>Mensaje (opcional)</label><textarea placeholder="¿Alguna solicitud especial? Cuéntanos..."></textarea></div>
+    </div>
+    <button class="form-submit" onclick="enviarWA()">Enviar solicitud de reserva 📲</button>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div>
+      <div class="footer-brand">Hotel Playa Paraíso</div>
+      <p class="footer-desc">Un rincón caribeño único en Dibulla, La Guajira. Cabañas en bambú, comida fresca del mar y la mejor atención de la región, de la mano de Don José y su equipo.</p>
+    </div>
+    <div>
+      <div class="footer-heading">Navegación</div>
+      <ul class="footer-links">
+        <li><a href="#">Inicio</a></li>
+        <li><a href="#habitaciones">Habitaciones</a></li>
+        <li><a href="#restaurante">Restaurante</a></li>
+        <li><a href="#resenas">Reseñas</a></li>
+        <li><a href="#reservar">Reservar</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-heading">Contacto</div>
+      <ul class="footer-links">
+        <li><a href="https://wa.me/573207525895" target="_blank">📱 320 752 5895</a></li>
+        <li><a href="#ubicacion">📍 Dibulla, La Guajira</a></li>
+        <li><a href="#reservar">✉️ Solicitar reserva</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-copy">© 2025 Hotel Playa Paraíso · Dibulla, La Guajira · Colombia</div>
+    <a href="https://wa.me/573207525895" target="_blank" class="footer-wa">📲 320 752 5895</a>
+  </div>
+</footer>
+
+<script>
+  window.addEventListener('scroll', () => {
+    document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 60);
+  });
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+  function enviarWA() {
+    const nombre = document.querySelector('input[placeholder="Tu nombre"]').value || 'Sin nombre';
+    const tel = document.querySelector('input[type="tel"]').value || 'Sin teléfono';
+    const cabana = document.querySelectorAll('select')[0].value;
+    const personas = document.querySelectorAll('select')[1].value;
+    const msg = `Hola Don José 👋, quiero reservar en Hotel Playa Paraíso 🌊%0A%0ANombre: ${nombre}%0ATeléfono: ${tel}%0ACabaña: ${cabana}%0APersonas: ${personas}`;
+    window.open(`https://wa.me/573207525895?text=${msg}`, '_blank');
+  }
+</script>
+</body>
+</html>
